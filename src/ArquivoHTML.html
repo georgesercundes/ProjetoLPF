@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jogo da Velha</title>
+</head>
+
+<style>
+    #tabuleiro{
+        width: 320px;
+        height: 320px;
+        margin: auto;
+        margin-top: 100px;
+    }
+    #tabuleiro h1{
+        text-align: center;
+        font-size: 40px;
+        margin-bottom: 50px;
+    }
+
+     #tabuleiro h4{
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .casa{
+        width: 100px;
+        height: 100px;
+        float: left;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        text-align: center;
+        vertical-align: middle;
+        font-family: sans-serif;
+        font-size: 100px;
+    }
+
+    #casa0, #casa1, #casa2, #casa3, #casa4, #casa5{
+        border-bottom: 10px Solid Black;
+    }
+
+    #casa2, #casa5, #casa8, #casa1, #casa4, #casa7{
+        border-left: 10px Solid Black;
+    }
+
+
+</style>
+<body style="background-color:PaleTurquoise">
+<script src="out/production/ProjetoLPF/lib/kotlin.js"></script>
+
+<div id="tabuleiro">
+
+    <h1 style="color:Solid Black">Jogo da Velha</h1>
+    <h4 style="color: Solid Black">Código por: George Siqueira Sercundes</h4>
+    <div class="casa" id="casa0"></div>
+    <div class="casa" id="casa1"></div>
+    <div class="casa" id="casa2"></div>
+    <div class="casa" id="casa3"></div>
+    <div class="casa" id="casa4"></div>
+    <div class="casa" id="casa5"></div>
+    <div class="casa" id="casa6"></div>
+    <div class="casa" id="casa7"></div>
+    <div class="casa" id="casa8"></div>
+
+</div>
+
+<script src="out/production/ProjetoLPF/ProjetoLPF.js"></script>
+</body>
+</html>
