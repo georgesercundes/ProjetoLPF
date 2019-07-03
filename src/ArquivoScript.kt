@@ -25,7 +25,7 @@ val listener = EventListener {
     val target = it.target as HTMLElement
     if(target.innerHTML == ""){
         turnoJogador(idToNumber(target.id), "X")
-        if(!temosUmGanhador())
+        if(!temosUmGanhador() && !empate())
             turnoOponente()
     }
 }
@@ -35,7 +35,7 @@ fun turnoOponente (){
     removerEventListeners()
     window.setTimeout({
         turnoJogador(EscolhaDoOponente(),"O")
-        if(!temosUmGanhador())
+        if(!temosUmGanhador() && !empate())
             ativarEventListeners()
         }, 500)
 }
@@ -67,12 +67,17 @@ fun temosUmGanhador(): Boolean{
             fimDoJogo(sequencia)
         }
     }}
-    if(casasVazias().size == 0 && vitoria == false){
+
+    return vitoria
+}
+
+fun empate (): Boolean {
+    if(casasVazias().size == 0) {
         window.confirm("Empate! Clique para jogar novamente!")
         limparTela()
-        ativarEventListeners()
+        return true
     }
-    return vitoria
+    return false
 }
 
 //Funções Auxiliares
