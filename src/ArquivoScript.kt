@@ -9,6 +9,8 @@ val posicoesGanharJogo = listOf(listOf(0,1,2), listOf(3,4,5), listOf(6,7,8), lis
         listOf(2,5,8), listOf(0,4,8), listOf(2,4,6))
 
 val casas = document.getElementsByClassName("casa").asList()
+val jogador = "X"
+val computador = "O"
 
 //Função Principal
 fun main(){
@@ -24,57 +26,86 @@ fun removerEventListeners() = casas.forEach { casa -> casa.removeEventListener("
 val listener = EventListener {
     val target = it.target as HTMLElement
     if(target.innerHTML == ""){
-        turnoJogador(idToNumber(target.id), "X")
+        turnoJogador(idToNumber(target.id), jogador)
         if(!temosUmGanhador() && !empate())
-            turnoOponente()
+            turnoOponente() // Passa a jogada pro computador
     }
 }
 
-//Função para executar a jogada randômica do computador
+//Função para executar a jogada do computador
 fun turnoOponente (){
     removerEventListeners()
     window.setTimeout({
-        turnoJogador(EscolhaDoOponente(),"O")
+        turnoJogador(EscolhaDoOponente(), computador)
         if(!temosUmGanhador() && !empate())
             ativarEventListeners()
         }, 500)
+}
+
+//Função para escolher a jogada do computador
+fun EscolhaDoOponente(): Int {
+    posicoesGanharJogo.forEach { comb -> run {
+        val casasLocal = casas
+        val sequencia = listOf(casasLocal.get(comb.get(0)), casasLocal.get(comb.get(1)), casasLocal.get(comb.get(2)))
+        val casasVaziasSequencia = sequencia.filter { casa -> casa.innerHTML == "" }
+        val casasSobrando = sequencia.filter { casa -> casa.innerHTML != "" }
+        if(casasVaziasSequencia.size == 1 && casasSobrando.all { casa -> casa.innerHTML == computador })
+            return idToNumber(casasVaziasSequencia.get(0).id)
+        if(casasVaziasSequencia.size == 1 && casasSobrando.all { casa -> casa.innerHTML == jogador })
+            return idToNumber(casasVaziasSequencia.get(0).id)
+    } }
+
+    if(casasVazias().size == 1)
+        return idToNumber(casasVazias().get(0).id)
+    else
+        return idToNumber(casasVazias().get(Random.nextInt(casasVazias().size - 1)).id)
+
 }
 
 //Função para finalizar a partida
 fun fimDoJogo(list: List<Element>){
     list.forEach { casaGanhadora -> casaGanhadora.setAttribute("Style", "Color:Red")}
     removerEventListeners()
+    var confirma: Boolean
     window.setTimeout({
-        if(list.get(0).innerHTML == "X")
-            window.confirm("Você Ganhou o Jogo! Clique para jogar novamente!")
-        else
-            window.confirm("Você Perdeu o Jogo! Clique para jogar Novamente!")
-        list.forEach { casa -> casa.removeAttribute("style") }
-        limparTela()
-        ativarEventListeners()
+        if(list.get(0).innerHTML == jogador){
+            confirma = window.confirm("Você Ganhou o Jogo! Clique para jogar novamente!")
+            if(confirma){
+                list.forEach { casa -> casa.removeAttribute("style") }
+                limparTela()
+                ativarEventListeners()
+            }
+        }
+
+        else{
+            confirma = window.confirm("Você Perdeu o Jogo! Clique para jogar Novamente!")
+            if(confirma){
+                list.forEach { casa -> casa.removeAttribute("style") }
+                limparTela()
+                ativarEventListeners()
+            }
+        }
     }, 500)
 }
 
-//Função para verificar se temos uma sequência ganhadora
+//Função para verificar se temos um ganhador
 fun temosUmGanhador(): Boolean{
-
-    var vitoria = false
     posicoesGanharJogo.forEach { comb -> run {
         val casasLocal = casas
         val sequencia = listOf(casasLocal.get(comb.get(0)), casasLocal.get(comb.get(1)), casasLocal.get(comb.get(2)))
         if(iguais(sequencia)) {
-            vitoria = true
             fimDoJogo(sequencia)
+            return true
         }
     }}
-
-    return vitoria
+    return false
 }
 
 fun empate (): Boolean {
     if(casasVazias().size == 0) {
-        window.confirm("Empate! Clique para jogar novamente!")
-        limparTela()
+        val confirma = window.confirm("Empate! Clique para jogar novamente!")
+        if(confirma)
+            limparTela()
         return true
     }
     return false
@@ -91,11 +122,5 @@ fun iguais(list: List<Element>) = list.all { casa -> casa.innerHTML == list.get(
 fun turnoJogador (index: Int, letra: String) {
     casas.get(index).innerHTML = letra
 }
-
-fun EscolhaDoOponente() =
-        if(casasVazias().size == 1)
-            idToNumber(casasVazias().get(0).id)
-        else
-            idToNumber(casasVazias().get(Random.nextInt(casasVazias().size - 1)).id)
 
 fun limparTela () = casas.forEach { casa -> casa.innerHTML = ""}
